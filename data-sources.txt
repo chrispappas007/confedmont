@@ -1,0 +1,12 @@
+Who's heritage project website at SPLC 
+https://www.splcenter.org/20160421/whose-heritage-public-symbols-confederacy
+
+SPLC Carto DB page with monuments data
+https://splcenter.carto.com/tables/confederate_symbols/public
+
+Quartz post summarizing sources for data on hate crimes - there are not many good ones
+https://qz.com/843834/are-hate-crimes-really-on-the-rise-in-america-heres-a-guide-to-the-data/
+
+Link to FBI UCR page on hate crime data - no overall summary (must look by year) and listed by state only
+https://ucr.fbi.gov/hate-crime
+
