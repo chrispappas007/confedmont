@@ -1,0 +1,19 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "Location of Confederate monuments",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrispappas007/confedmont.git"
+  },
+  "author": "Christina Pappas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chrispappas007/confedmont/issues"
+  },
+  "homepage": "https://github.com/chrispappas007/confedmont#readme"
+}
