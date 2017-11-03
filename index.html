@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Conderate something something</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="author" content="Chris">
+    <meta name="author" content="Rich">
+    <meta name="description" content="map of confederate monuments or yet to be determined">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Libre+Franklin" type="text/css">
+    <link href="https://api.mapbox.com/mapbox-assembly/v0.19.0/assembly.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+    <link rel="stylesheet" href="css/styles.css" type="text/css">
+  </head>
+  <body>
+      
+    <div id="map"></div>
+  
+    <script
+    src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>
+    <script async defer src="https://api.mapbox.com/mapbox-assembly/v0.19.0/assembly.js"></script>
+    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+    <script>
+
+        var map = L.map('map', {
+            zoomSnap: .1,
+            center: [38.599, -95.545],
+            zoom: 4
+        });
+
+        L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager_nolabels/{z}/{x}/{y}.png', {
+            maxZoom: 18, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
+        }).addTo(map);
+
+        $.getJSON('project-data/confederate_symbols.geojson', function(data){
+
+
+
+
+            
+            L.geoJson(data).addTo(map)
+        });
+
+
+    
+    </script>
+
+  </body>
+</html>
