@@ -54,7 +54,21 @@
             $.when(
                 $.getJSON('project-data/monudist.json')
             ).done(function(monuments) {
-                L.geoJson(monuments).addTo(map);
+                L.geoJson(monuments, {
+                    //loops through each layer and binds a popup tip//
+            onEachFeature: function (feature, layer) {
+                var tip= "<h3> <b># Confederate Monuments</b>: " + feature.join_count + "<h3>"
+                layer.bindPopup(tip);
+                 
+                //add event listeners//
+                layer.on('mouseover', function (e) { //when mouse hovers over marker make it do a thing
+                    this.openPopup(); //the thing is to open the popup
+                });
+
+                layer.on('mouseout', function (e) { //when the mouse moves away from the marker it will do a thing
+                    this.closePopup(); //the thing will be to close the popup
+                });
+                }).addTo(map);
             });
         
     </script>
