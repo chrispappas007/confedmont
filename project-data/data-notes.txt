@@ -1,0 +1,9 @@
+## use csv2geojson to convert csv to geojson
+csv2geojson confederate_symbols.csv --lat "latitude" --lon "longitude" > symbols.json
+
+## use mapshaper to convert shapefile to geojson and trim precision
+mapshaper cb_2016_us_cd115_20m.shp -simplify 30% -filter remove-empty -filter-fields ALAND,STATEFP -o precision=.0001 format=geojson districts.json
+
+## use mapshaper to filter out unwanted fields and trim precision
+mapshaper symbols.json -filter-fields uid,feature_name,address,city,state,side,year_dedicated -o format=geojson precision=.000001 symbols-filtered.json
+history > data-notes.txt
