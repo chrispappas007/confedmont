@@ -36,40 +36,28 @@
         }).addTo(map);
 
 
-        // $.when(
-        //     $.getJSON('data/districts.json'),
-        //     $.getJSON('data/symbols.json')
-        // ).done(function(districts, symbols) {
-        //     makeMap(districts, symbols)
-        // });
+        $.when(
+            // $.getJSON('data/districts.json'),
+            $.getJSON('project-data/monudist.json'),
+            $.getJSON('data/symbols.json')
+        ).done(function(districts, symbols) {
+            makeMap(districts, symbols)
+        });
 
-        // function makeMap(districts, symbols) {
+        function makeMap(districts, symbols) {
             
 
-        //     L.geoJson(districts).addTo(map);
-        //     L.geoJson(symbols).addTo(map);
+            L.geoJson(districts,{
+                onEachFeature: function (feature, layer) {
+                    var tip= "<h3> <b># Confederate Monuments</b>: " + feature.properties.join_count + "<h3>"
+                    layer.bindTooltip(tip);
+                }
+            }).addTo(map);
 
-        // }
 
-            $.when(
-                $.getJSON('project-data/monudist.json')
-            ).done(function(monuments) {
-                L.geoJson(monuments, {
-                    //loops through each layer and binds a popup tip//
-            onEachFeature: function (feature, layer) {
-                var tip= "<h3> <b># Confederate Monuments</b>: " + feature.join_count + "<h3>"
-                layer.bindPopup(tip);
-                 
-                //add event listeners//
-                layer.on('mouseover', function (e) { //when mouse hovers over marker make it do a thing
-                    this.openPopup(); //the thing is to open the popup
-                });
+            // L.geoJson(symbols).addTo(map);
 
-                layer.on('mouseout', function (e) { //when the mouse moves away from the marker it will do a thing
-                    this.closePopup(); //the thing will be to close the popup
-                });
-                }).addTo(map);
-            });
+        }
         
     </script>
 
