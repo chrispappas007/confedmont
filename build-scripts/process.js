@@ -38,6 +38,7 @@ function processData(symbols, districts) {
         district.properties.count = count;
     });
 
+    // write the output geojson to file
     fs.writeFile('../data/districts.json', JSON.stringify(districts), (err)=> {
         if(err) throw err;
     });
