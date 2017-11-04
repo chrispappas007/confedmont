@@ -36,23 +36,27 @@
         }).addTo(map);
 
 
-        $.when(
-            $.getJSON('data/districts.json'),
-            $.getJSON('data/symbols.json')
-        ).done(function(districts, symbols) {
-            makeMap(districts, symbols)
-        });
+        // $.when(
+        //     $.getJSON('data/districts.json'),
+        //     $.getJSON('data/symbols.json')
+        // ).done(function(districts, symbols) {
+        //     makeMap(districts, symbols)
+        // });
 
-        function makeMap(districts, symbols) {
+        // function makeMap(districts, symbols) {
             
 
-            L.geoJson(districts).addTo(map);
-            L.geoJson(symbols).addTo(map);
+        //     L.geoJson(districts).addTo(map);
+        //     L.geoJson(symbols).addTo(map);
 
-        }
+        // }
 
-
-    
+            $.when(
+                $.getJSON('project-data/monudist.json')
+            ).done(function(monuments) {
+                L.geoJson(monuments).addTo(map);
+            });
+        
     </script>
 
   </body>
