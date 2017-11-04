@@ -4,7 +4,7 @@
   "description": "Location of Confederate monuments",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "live-server"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/chrispappas007/confedmont/issues"
   },
-  "homepage": "https://github.com/chrispappas007/confedmont#readme"
+  "homepage": "https://github.com/chrispappas007/confedmont#readme",
+  "dependencies": {
+    "@turf/turf": "^4.7.3",
+    "async": "^2.5.0",
+    "chalk": "^2.3.0",
+    "mapshaper": "^0.4.56"
+  }
 }
