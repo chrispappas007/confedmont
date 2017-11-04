@@ -7,3 +7,6 @@ mapshaper cb_2016_us_cd115_20m.shp -simplify 30% -filter remove-empty -filter-fi
 ## use mapshaper to filter out unwanted fields and trim precision
 mapshaper symbols.json -filter-fields uid,feature_name,address,city,state,side,year_dedicated -o format=geojson precision=.000001 symbols-filtered.json
 history > data-notes.txt
+
+## use mapshaper to join symbols-filtered.json to districts.json; added a count of monuments in district (join_count)
+mapshaper districts.json -join symbols-filtered.json calc='join_count=count()' -o monudist.json
