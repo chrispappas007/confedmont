@@ -10,3 +10,5 @@ https://qz.com/843834/are-hate-crimes-really-on-the-rise-in-america-heres-a-guid
 Link to FBI UCR page on hate crime data - no overall summary (must look by year) and listed by state only
 https://ucr.fbi.gov/hate-crime
 
+Election and demographic data by congressional district
+https://refinery.dailykosbeta.com/elections-data
