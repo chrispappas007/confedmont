@@ -43,7 +43,6 @@
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
         }).addTo(map);
 
-
         $.when(
             // $.getJSON('data/districts.json'),
             $.getJSON('project-data/monudist.json'),
@@ -72,6 +71,8 @@
                     fillColor: getColor(layer.feature.properties.join_count, breaks) //assign a fill color based on the getColor function
                 }); //for each layer style the break based on the getColor function
             }).addTo(map);
+
+            makeChoroLegend(breaks);
 
             // L.geoJson(symbols).addTo(map);
 
@@ -112,6 +113,39 @@
             }
 
         }; //end getColor function
+
+        function makeChoroLegend(breaks) {
+
+            var legend = L.control({'position':'bottomright'});
+
+            legend.onAdd = function (map) {
+                var div = L.DomUtil.create('div', 'legend'); // create a div with a class "info"
+
+                var legendInfo = '<h2 class="txt-h4 mb24">Number of Confederate Monuments in Congressional Districts</h2>',
+                    classInfo;
+
+                legendInfo += '<div><span style="background:' + 
+                                getColor(0, breaks) + '"></span>' +  
+                                0 +  ' monuments</div>';
+                
+                breaks.forEach(function(nums, i) {
+  
+                    classInfo = '<div><span style="background:' + 
+                                getColor(nums[1], breaks) + '"></span>' +  
+                                nums[0] + '&ndash;' + nums[1] + '</div>';
+                    
+                    legendInfo += classInfo
+                });
+                
+                div.innerHTML =  legendInfo;
+                
+                return div;
+            };
+
+            legend.addTo(map);
+
+
+        }
     </script>
 
 </body>
