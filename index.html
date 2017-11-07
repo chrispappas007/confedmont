@@ -54,8 +54,8 @@
         function makeMap(districts, symbols) {
             
 
-          var dataLayer =  L.geoJson(districts,{
-                style: outline,
+          var dataLayer =  L.geoJson(districts,{ //assign districts json to dataLayer variable
+                style: outline, 
                 onEachFeature: function (feature, layer) {
                     var tip= "<h3> <b># Confederate Monuments</b>: " + feature.properties.join_count + "<h3>"
                     layer.bindTooltip(tip);
@@ -65,9 +65,9 @@
 
             var breaks = getBreaks(dataLayer); //declare variable and assign function that will determine range of values from datan
 
-            dataLayer.eachLayer(function(layer) {
-                layer.setStyle({
-                fillColor: getColor(layer.feature.properties.join_count, breaks) 
+            dataLayer.eachLayer(function(layer) { //loop through each layer
+                layer.setStyle({ //assign a style to each layer
+                fillColor: getColor(layer.feature.properties.join_count, breaks) //assign a fill color based on the getColor function
                 }); //for each layer style the break based on the getColor function
             }).addTo(map);
 
