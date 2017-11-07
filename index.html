@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title>Conderate something something</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -12,21 +13,19 @@
     <link href="https://api.mapbox.com/mapbox-assembly/v0.19.0/assembly.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
     <link rel="stylesheet" href="css/styles.css" type="text/css">
-  </head>
-  <body>
-      
+</head>
+
+<body>
+
     <div id="map"></div>
-  
-    <script
-    src="https://code.jquery.com/jquery-3.2.1.min.js"
-    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-    crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
     <script async defer src="https://api.mapbox.com/mapbox-assembly/v0.19.0/assembly.js"></script>
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
     <script src="https://unpkg.com/simple-statistics@5.1.0/dist/simple-statistics.min.js"></script>
 
     <script>
-
         var map = L.map('map', {
             zoomSnap: .1,
             center: [38.599, -95.545],
@@ -34,12 +33,13 @@
         });
 
         var outline = {
-            color : '#ffffff',
-            weight : 1
+            color: '#ffffff',
+            weight: 1
         }
 
         L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager_nolabels/{z}/{x}/{y}.png', {
-            maxZoom: 18, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
+            maxZoom: 18,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
         }).addTo(map);
 
 
@@ -47,17 +47,18 @@
             // $.getJSON('data/districts.json'),
             $.getJSON('project-data/monudist.json'),
             $.getJSON('data/symbols.json')
-        ).done(function(districts, symbols) {
+        ).done(function (districts, symbols) {
             makeMap(districts, symbols)
         });
 
         function makeMap(districts, symbols) {
-            
 
-          var dataLayer =  L.geoJson(districts,{ //assign districts json to dataLayer variable
-                style: outline, 
+
+            var dataLayer = L.geoJson(districts, { //assign districts json to dataLayer variable
+                style: outline,
                 onEachFeature: function (feature, layer) {
-                    var tip= "<h3> <b># Confederate Monuments</b>: " + feature.properties.join_count + "<h3>"
+                    var tip = "<h3> <b># Confederate Monuments</b>: " + feature.properties.join_count +
+                        "<h3>"
                     layer.bindTooltip(tip);
                 }
 
@@ -65,9 +66,9 @@
 
             var breaks = getBreaks(dataLayer); //declare variable and assign function that will determine range of values from datan
 
-            dataLayer.eachLayer(function(layer) { //loop through each layer
+            dataLayer.eachLayer(function (layer) { //loop through each layer
                 layer.setStyle({ //assign a style to each layer
-                fillColor: getColor(layer.feature.properties.join_count, breaks) //assign a fill color based on the getColor function
+                    fillColor: getColor(layer.feature.properties.join_count, breaks) //assign a fill color based on the getColor function
                 }); //for each layer style the break based on the getColor function
             }).addTo(map);
 
@@ -79,15 +80,15 @@
 
             var values = []; //empty array to hold the values
 
-            dataLayer.eachLayer(function(layer) { //loop through each layer
+            dataLayer.eachLayer(function (layer) { //loop through each layer
                 var value = layer.feature.properties.join_count; //get join count value and push to array
-                if (value > 0) values.push(value);   //removing 0 because it will be coded on its own
+                if (value > 0) values.push(value); //removing 0 because it will be coded on its own
             });
 
-                console.log(values);
-            
+            console.log(values);
+
             var clusters = ss.ckmeans(values, 5); //group data into similar clusters using ckmeans
-            var breaks = clusters.map(function(cluster) {
+            var breaks = clusters.map(function (cluster) {
                 console.log(cluster);
                 return [cluster[0], cluster.pop()]; //create an array of the lowest and highest value of each cluster
             });
@@ -113,10 +114,8 @@
                 return '#5c53a5'
             }
         }; //end getColor function
-
-
-        
     </script>
 
-  </body>
+</body>
+
 </html>
