@@ -23,6 +23,8 @@
     crossorigin="anonymous"></script>
     <script async defer src="https://api.mapbox.com/mapbox-assembly/v0.19.0/assembly.js"></script>
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/simple-statistics@5.1.0/dist/simple-statistics.min.js"></script>
+
     <script>
 
         var map = L.map('map', {
@@ -47,17 +49,40 @@
         function makeMap(districts, symbols) {
             
 
-            L.geoJson(districts,{
+          var dataLayer =  L.geoJson(districts,{
                 onEachFeature: function (feature, layer) {
                     var tip= "<h3> <b># Confederate Monuments</b>: " + feature.properties.join_count + "<h3>"
                     layer.bindTooltip(tip);
                 }
+
             }).addTo(map);
 
-
+            getBreaks(dataLayer);
             // L.geoJson(symbols).addTo(map);
 
+        };
+
+        function getBreaks(dataLayer) {
+
+            var values = [];
+
+            dataLayer.eachLayer(function(layer) {
+                var value = layer.feature.properties.join_count;
+                if (value > 0) values.push(value);   
+            });
+
+                console.log(values);
+            
+            var clusters = ss.ckmeans(values, 5); //group data into similar clusters using ckmeans
+            var breaks = clusters.map(function(cluster) {
+                return [cluster[0], cluster.pop()]; //create an array of the lowest and highest value of each cluster
+            });
+            console.log(breaks);
+            return breaks;
+
+
         }
+
         
     </script>
 
