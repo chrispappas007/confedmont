@@ -57,31 +57,57 @@
 
             }).addTo(map);
 
-            getBreaks(dataLayer);
+            var breaks = getBreaks(dataLayer); //declare variable and assign function that will determine range of values from datan
+
+            dataLayer.eachLayer(function(layer) {
+                layer.setStyle({
+                fillColor: getColor(layer.feature.properties.join_count, breaks) 
+                }); //for each layer style the break based on the getColor function
+            }).addTo(map);
+
             // L.geoJson(symbols).addTo(map);
 
         };
 
         function getBreaks(dataLayer) {
 
-            var values = [];
+            var values = []; //empty array to hold the values
 
-            dataLayer.eachLayer(function(layer) {
-                var value = layer.feature.properties.join_count;
-                if (value > 0) values.push(value);   
+            dataLayer.eachLayer(function(layer) { //loop through each layer
+                var value = layer.feature.properties.join_count; //get join count value and push to array
+                if (value > 0) values.push(value);   //removing 0 because it will be coded on its own
             });
 
                 console.log(values);
             
             var clusters = ss.ckmeans(values, 5); //group data into similar clusters using ckmeans
             var breaks = clusters.map(function(cluster) {
+                console.log(cluster);
                 return [cluster[0], cluster.pop()]; //create an array of the lowest and highest value of each cluster
             });
+
             console.log(breaks);
+
             return breaks;
 
+        };
 
-        }
+        function getColor(d, breaks) { //assign color based on break
+            if (d = 0) {
+                return '#f3e79b';
+            } else if (d <= breaks[0][1]) {
+                return '#f8a07e';
+            } else if (d <= breaks[1][1]) {
+                return '#eb7f86';
+            } else if (d <= breaks[2][1]) {
+                return '#ce6693';
+            } else if (d <= breaks[3][1]) {
+                return '#a059a0';
+            } else if (d <= breaks[4][1]) {
+                return '#5c53a5'
+            }
+        }; //end getColor function
+
 
         
     </script>
