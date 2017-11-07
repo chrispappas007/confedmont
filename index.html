@@ -38,6 +38,9 @@
             fillOpacity: 1
         }
 
+        // make global for access later
+        var choroLayer;
+
         L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager_nolabels/{z}/{x}/{y}.png', {
             maxZoom: 18,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
@@ -54,7 +57,7 @@
         function makeMap(districts, symbols) {
 
 
-            var dataLayer = L.geoJson(districts, { //assign districts json to dataLayer variable
+            choroLayer = L.geoJson(districts, { //assign districts json to dataLayer variable
                 style: outline,
                 onEachFeature: function (feature, layer) {
                     var tip = "<h3> <b># Confederate Monuments</b>: " + feature.properties.join_count +
@@ -64,9 +67,9 @@
 
             }).addTo(map);
 
-            var breaks = getBreaks(dataLayer); //declare variable and assign function that will determine range of values from datan
+            var breaks = getBreaks(choroLayer); //declare variable and assign function that will determine range of values from datan
 
-            dataLayer.eachLayer(function (layer) { //loop through each layer
+            choroLayer.eachLayer(function (layer) { //loop through each layer
                 layer.setStyle({ //assign a style to each layer
                     fillColor: getColor(layer.feature.properties.join_count, breaks) //assign a fill color based on the getColor function
                 }); //for each layer style the break based on the getColor function
@@ -78,11 +81,11 @@
 
         };
 
-        function getBreaks(dataLayer) {
+        function getBreaks(choroLayer) {
 
             var values = []; //empty array to hold the values
 
-            dataLayer.eachLayer(function (layer) { //loop through each layer
+            choroLayer.eachLayer(function (layer) { //loop through each layer
                 var value = layer.feature.properties.join_count; //get join count value and push to array
                 if (value > 0) values.push(value); //removing 0 because it will be coded on its own
             });
@@ -124,15 +127,15 @@
                 var legendInfo = '<h2 class="txt-h4 mb24">Number of Confederate Monuments in Congressional Districts</h2>',
                     classInfo;
 
-                legendInfo += '<div><span style="background:' + 
+                legendInfo += '<div data-value="0"><span style="background:' + 
                                 getColor(0, breaks) + '"></span>' +  
                                 0 +  ' monuments</div>';
                 
                 breaks.forEach(function(nums, i) {
   
-                    classInfo = '<div><span style="background:' + 
+                    classInfo = '<div data-value="' + nums[1] + ''+'"><span style="background:' + 
                                 getColor(nums[1], breaks) + '"></span>' +  
-                                nums[0] + '&ndash;' + nums[1] + '</div>';
+                                nums[0] + ' &mdash; ' + nums[1] + '</div>';
                     
                     legendInfo += classInfo
                 });
@@ -144,7 +147,49 @@
 
             legend.addTo(map);
 
+            // when mousing over legend div
+            $('.legend div').on('mouseover', function() {
+                // get the data-value
+                var val = $(this).attr('data-value');
+                // highlight the value
+                highlightDistrict(val, breaks);
+            });
 
+            $('.legend div').on('mouseout', function() {
+                var val = $(this).attr('data-value');
+                resetDistrict();
+            })
+        }
+
+        function highlightDistrict(val, breaks) {
+
+            // determine which class range values are being highlighted, kinda hacky ...
+            var highLightRange = [0, 0];
+
+            breaks.forEach(function(breakVals) {
+                if(val > breakVals[0] && val <= breakVals[1]) {
+                    highLightRange = breakVals;
+                } 
+            })
+  
+            choroLayer.eachLayer(function(layer) {
+                
+                var counts = layer.feature.properties.join_count;
+
+                if(counts >= highLightRange[0] && counts <= highLightRange[1]) {
+                    // don't do anything
+                } else {
+                    layer.setStyle({
+                        fillOpacity: '.2'
+                    })
+                }
+            });
+        }
+
+        function resetDistrict() {
+            choroLayer.setStyle({
+                fillOpacity: '1'
+            });
         }
     </script>
 

@@ -23,3 +23,7 @@ body {
 .legend div {
     font-size: 1.6em;
 }
+.legend div:hover {
+    cursor: pointer;
+    font-weight: bold;
+}
