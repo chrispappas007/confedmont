@@ -116,7 +116,16 @@
             symbols.features.forEach(function(feature) {
                 // create a new Leaflet marker for each
                 var coords = feature.geometry.coordinates,
-                    marker = L.marker([coords[1], coords[0]]);
+                    marker = L.marker([coords[1], coords[0]], {icon: function(feature) {
+                        var type = feature.properties.category;
+                        return type === 'Monument' ? monument :
+                                type === 'Courthouse' ? courthouse :
+                                type === 'School' ? school :
+                                type === 'Roadway' ? roadway : 
+                                type === 'County' ? county : 
+                                type === 'Other' ? other : monument;
+                    }
+                });
                 // bind a tooltip to the marker
                 marker.bindTooltip("<b>Monument:</b> " + feature.properties.feature_name + "</br>" + "<b>Year Dedicated:</b> " + feature.properties.year_dedicated + "</br>" + "<b>Side during Civil War:</b> " + feature.properties.side);
                 // add the marker to the markerClusterGroup
