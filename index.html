@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title>Conderate something something</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -12,54 +13,186 @@
     <link href="https://api.mapbox.com/mapbox-assembly/v0.19.0/assembly.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
     <link rel="stylesheet" href="css/styles.css" type="text/css">
-  </head>
-  <body>
-      
+</head>
+
+<body>
+
     <div id="map"></div>
-  
-    <script
-    src="https://code.jquery.com/jquery-3.2.1.min.js"
-    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-    crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
     <script async defer src="https://api.mapbox.com/mapbox-assembly/v0.19.0/assembly.js"></script>
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
-    <script>
+    <script src="https://unpkg.com/simple-statistics@5.1.0/dist/simple-statistics.min.js"></script>
 
+    <script>
         var map = L.map('map', {
             zoomSnap: .1,
             center: [38.599, -95.545],
             zoom: 4
         });
 
-        L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager_nolabels/{z}/{x}/{y}.png', {
-            maxZoom: 18, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
-        }).addTo(map);
+        var outline = {
+            color: '#ffffff',
+            weight: 1,
+            fillOpacity: 1
+        }
 
+        // make global for access later
+        var choroLayer;
+
+        L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager_nolabels/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
+        }).addTo(map);
 
         $.when(
             // $.getJSON('data/districts.json'),
             $.getJSON('project-data/monudist.json'),
             $.getJSON('data/symbols.json')
-        ).done(function(districts, symbols) {
+        ).done(function (districts, symbols) {
             makeMap(districts, symbols)
         });
 
         function makeMap(districts, symbols) {
-            
 
-            L.geoJson(districts,{
+
+            choroLayer = L.geoJson(districts, { //assign districts json to dataLayer variable
+                style: outline,
                 onEachFeature: function (feature, layer) {
-                    var tip= "<h3> <b># Confederate Monuments</b>: " + feature.properties.join_count + "<h3>"
+                    var tip = "<h3> <b># Confederate Monuments</b>: " + feature.properties.join_count +
+                        "<h3>"
                     layer.bindTooltip(tip);
                 }
+
             }).addTo(map);
 
+            var breaks = getBreaks(choroLayer); //declare variable and assign function that will determine range of values from datan
+
+            choroLayer.eachLayer(function (layer) { //loop through each layer
+                layer.setStyle({ //assign a style to each layer
+                    fillColor: getColor(layer.feature.properties.join_count, breaks) //assign a fill color based on the getColor function
+                }); //for each layer style the break based on the getColor function
+            }).addTo(map);
+
+            makeChoroLegend(breaks);
 
             // L.geoJson(symbols).addTo(map);
 
+        };
+
+        function getBreaks(choroLayer) {
+
+            var values = []; //empty array to hold the values
+
+            choroLayer.eachLayer(function (layer) { //loop through each layer
+                var value = layer.feature.properties.join_count; //get join count value and push to array
+                if (value > 0) values.push(value); //removing 0 because it will be coded on its own
+            });
+
+            var clusters = ss.ckmeans(values, 5); //group data into similar clusters using ckmeans
+            var breaks = clusters.map(function (cluster) {
+                return [cluster[0], cluster.pop()]; //create an array of the lowest and highest value of each cluster
+            });
+
+            return breaks;
+
+        };
+
+        function getColor(d, breaks) { //assign color based on break
+     
+            if (d == 0) {
+                return '#f3e79b';
+            } else if (d <= breaks[0][1]) {
+                return '#f8a07e';
+            } else if (d <= breaks[1][1]) {
+                return '#eb7f86';
+            } else if (d <= breaks[2][1]) {
+                return '#ce6693';
+            } else if (d <= breaks[3][1]) {
+                return '#a059a0';
+            } else if (d <= breaks[4][1]) {
+                return '#5c53a5';
+            }
+
+        }; //end getColor function
+
+        function makeChoroLegend(breaks) {
+
+            var legend = L.control({'position':'bottomright'});
+
+            legend.onAdd = function (map) {
+                var div = L.DomUtil.create('div', 'legend'); // create a div with a class "info"
+
+                var legendInfo = '<h2 class="txt-h4 mb24">Number of Confederate Monuments in Congressional Districts</h2>',
+                    classInfo;
+
+                legendInfo += '<div data-value="0"><span style="background:' + 
+                                getColor(0, breaks) + '"></span>' +  
+                                0 +  ' monuments</div>';
+                
+                breaks.forEach(function(nums, i) {
+  
+                    classInfo = '<div data-value="' + nums[1] + ''+'"><span style="background:' + 
+                                getColor(nums[1], breaks) + '"></span>' +  
+                                nums[0] + ' &mdash; ' + nums[1] + '</div>';
+                    
+                    legendInfo += classInfo
+                });
+                
+                div.innerHTML =  legendInfo;
+                
+                return div;
+            };
+
+            legend.addTo(map);
+
+            // when mousing over legend div
+            $('.legend div').on('mouseover', function() {
+                // get the data-value
+                var val = $(this).attr('data-value');
+                // highlight the value
+                highlightDistrict(val, breaks);
+            });
+
+            $('.legend div').on('mouseout', function() {
+                var val = $(this).attr('data-value');
+                resetDistrict();
+            })
         }
-        
+
+        function highlightDistrict(val, breaks) {
+
+            // determine which class range values are being highlighted, kinda hacky ...
+            var highLightRange = [0, 0];
+
+            breaks.forEach(function(breakVals) {
+                if(val > breakVals[0] && val <= breakVals[1]) {
+                    highLightRange = breakVals;
+                } 
+            })
+  
+            choroLayer.eachLayer(function(layer) {
+                
+                var counts = layer.feature.properties.join_count;
+
+                if(counts >= highLightRange[0] && counts <= highLightRange[1]) {
+                    // don't do anything
+                } else {
+                    layer.setStyle({
+                        fillOpacity: '.2'
+                    })
+                }
+            });
+        }
+
+        function resetDistrict() {
+            choroLayer.setStyle({
+                fillOpacity: '1'
+            });
+        }
     </script>
 
-  </body>
+</body>
+
 </html>

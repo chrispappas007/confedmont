@@ -9,3 +9,21 @@ body {
     width: 100%;
     background: #3d3d3d;
 }
+.legend {
+    max-width: 260px;
+    background: white;
+    padding: 12px 24px;
+}
+.legend span {
+    width: 36px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 12px;
+}
+.legend div {
+    font-size: 1.6em;
+}
+.legend div:hover {
+    cursor: pointer;
+    font-weight: bold;
+}
