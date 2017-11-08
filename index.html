@@ -42,27 +42,33 @@
         }
 
         var roadway = new L.Icon({
-            iconUrl: 'icons/car-15.svg'
+            iconUrl: 'icons/car-15.svg',
+            iconSize: [24,24]
         });
 
         var school = new L.Icon({
-            iconUrl: 'icons/school-15.svg'
+            iconUrl: 'icons/school-15.svg',
+            iconSize: [24,24]
         });
 
         var monument = new L.Icon({
-            iconUrl: 'icons/landmark-15.svg'
+            iconUrl: 'icons/landmark-15.svg',
+            iconSize: [24,24]
         });
 
         var courthouse = new L.Icon({
-            iconUrl: 'icons/town-hall-15.svg'
+            iconUrl: 'icons/town-hall-15.svg',
+            iconSize: [24,24]
         });
 
         var county = new L.Icon({
-            iconUrl: 'icons/triangle-15.svg'
+            iconUrl: 'icons/triangle-15.svg',
+            iconSize: [24,24]
         });
 
         var other = new L.Icon({
-            iconUrl: 'icons/circle-15.svg'
+            iconUrl: 'icons/circle-15.svg',
+            iconSize: [24,24]
         });
 
         // make global for access later
@@ -112,26 +118,49 @@
             // create new markerClusterGroup
             var markers = L.markerClusterGroup();
 
-            // loop through all our signals features
-            symbols.features.forEach(function(feature) {
-                // create a new Leaflet marker for each
-                var coords = feature.geometry.coordinates,
-                    marker = L.marker([coords[1], coords[0]], {icon: function(feature) {
-                        var type = feature.properties.category;
-                        return type === 'Monument' ? monument :
-                                type === 'Courthouse' ? courthouse :
-                                type === 'School' ? school :
-                                type === 'Roadway' ? roadway : 
-                                type === 'County' ? county : 
-                                type === 'Other' ? other : monument;
+            // create layerGroup
+            L.geoJson(symbols, {
+                // convert point types to layers
+                pointToLayer: function(feature, latlng) {
+                    
+                    var type = feature.properties.category;
+                    // use switch statement to determine which icon
+                    switch(type) {
+                        case 'Monument':
+                            icon = monument;
+                            break;
+                        case 'Courthouse':
+                            icon = courthouse;
+                            break;
+                        case 'School':
+                            icon = school;
+                            break;
+                        case 'Roadway':
+                            icon = roadway;
+                            break;
+                        case 'County':
+                            icon = county;
+                            break;
+                        default:
+                            icon = other;
+                            break;
                     }
-                });
-                // bind a tooltip to the marker
-                marker.bindTooltip("<b>Monument:</b> " + feature.properties.feature_name + "</br>" + "<b>Year Dedicated:</b> " + feature.properties.year_dedicated + "</br>" + "<b>Side during Civil War:</b> " + feature.properties.side);
-                // add the marker to the markerClusterGroup
-                markers.addLayer(marker);
-
+                    // create the marker icon
+                    var marker = L.marker(latlng, {icon: icon});
+                    // add to the markercluster layergroup
+                    markers.addLayer(marker);
+                    return marker;
+                },
+                onEachFeature(feature, layer) {
+                    var props = feature.properties;
+                    // bind a tooltip to the marker
+                    layer.bindTooltip("<b>Monument:</b> " + props.feature_name + 
+                        "</br>" + "<b>Year Dedicated:</b> " + props.year_dedicated + "</br>" + 
+                        "<b>Side during Civil War:</b> " + props.side);
+                
+                }
             });
+            
             // add the markerClusterGroup to the map
             map.addLayer(markers);
 
