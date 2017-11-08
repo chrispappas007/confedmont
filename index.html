@@ -108,8 +108,9 @@
             var breaks = getBreaks(choroLayer); //declare variable and assign function that will determine range of values from datan
 
             choroLayer.eachLayer(function (layer) { //loop through each layer
+                var props = layer.feature.properties
                 layer.setStyle({ //assign a style to each layer
-                    fillColor: getColor(layer.feature.properties.join_count, breaks) //assign a fill color based on the getColor function
+                    fillColor: getColor(props.join_count/props.ALAND, breaks) //assign a fill color based on the getColor function
                 }); //for each layer style the break based on the getColor function
             }).addTo(map);
 
@@ -171,7 +172,8 @@
             var values = []; //empty array to hold the values
 
             choroLayer.eachLayer(function (layer) { //loop through each layer
-                var value = layer.feature.properties.join_count; //get join count value and push to array
+                var props = layer.feature.properties;
+                var value = props.join_count/props.ALAND; //get join count value and push to array
                 if (value > 0) values.push(value); //removing 0 because it will be coded on its own
             });
 
@@ -209,7 +211,7 @@
             legend.onAdd = function (map) {
                 var div = L.DomUtil.create('div', 'legend'); // create a div with a class "info"
 
-                var legendInfo = '<h2 class="txt-h4 mb24">Number of Confederate Monuments in Congressional Districts</h2>',
+                var legendInfo = '<h2 class="txt-h4 mb24">Number of Confederate Monuments  per 1,000 square miles by Congressional District</h2>',
                     classInfo;
 
                 legendInfo += '<div data-value="0"><span style="background:' + 
@@ -220,7 +222,7 @@
   
                     classInfo = '<div data-value="' + nums[1] + ''+'"><span style="background:' + 
                                 getColor(nums[1], breaks) + '"></span>' +  
-                                nums[0] + ' &mdash; ' + nums[1] + '</div>';
+                                Math.round(nums[0]*100000000000) + ' &mdash; ' + Math.round(nums[1]*100000000000) + '</div>';
                     
                     legendInfo += classInfo
                 });
@@ -259,7 +261,8 @@
   
             choroLayer.eachLayer(function(layer) {
                 
-                var counts = layer.feature.properties.join_count;
+                var props = layer.feature.properties;
+                var counts = (props.join_count/props.ALAND)*5**10;
 
                 if(counts >= highLightRange[0] && counts <= highLightRange[1]) {
                     // don't do anything
