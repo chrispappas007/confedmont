@@ -94,7 +94,7 @@
                 var coords = feature.geometry.coordinates,
                     marker = L.marker([coords[1], coords[0]]);
                 // bind a tooltip to the marker
-                marker.bindTooltip("<b>Monument:</b> " + feature.properties.feature_name);
+                marker.bindTooltip("<b>Monument:</b> " + feature.properties.feature_name + "</br>" + "<b>Side during Civil War:</b> " + feature.properties.side);
                 // add the marker to the markerClusterGroup
                 markers.addLayer(marker);
 
