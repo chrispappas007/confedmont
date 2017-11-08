@@ -52,7 +52,7 @@
         $.when(
             // $.getJSON('data/districts.json'),
             $.getJSON('data/monudist.json'),
-            $.getJSON('data/symbols.json')
+            $.getJSON('data/symbols-filtered3.json')
         ).done(function (districts, symbols) {
 
             symbols =symbols[0];
@@ -94,7 +94,7 @@
                 var coords = feature.geometry.coordinates,
                     marker = L.marker([coords[1], coords[0]]);
                 // bind a tooltip to the marker
-                marker.bindTooltip("<b>Monument:</b> " + feature.properties.feature_name + "</br>" + "<b>Side during Civil War:</b> " + feature.properties.side);
+                marker.bindTooltip("<b>Monument:</b> " + feature.properties.feature_name + "</br>" + "<b>Year Dedicated:</b> " + feature.properties.year_dedicated + "</br>" + "<b>Side during Civil War:</b> " + feature.properties.side);
                 // add the marker to the markerClusterGroup
                 markers.addLayer(marker);
 
