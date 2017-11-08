@@ -13,6 +13,8 @@
     <link href="https://api.mapbox.com/mapbox-assembly/v0.19.0/assembly.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
     <link rel="stylesheet" href="css/styles.css" type="text/css">
+    <link rel="stylesheet" href="libs/markerCluster/MarkerCluster.css">
+    <link rel="stylesheet" href="libs/markerCluster/MarkerCluster.Default.css">
 </head>
 
 <body>
@@ -24,6 +26,7 @@
     <script async defer src="https://api.mapbox.com/mapbox-assembly/v0.19.0/assembly.js"></script>
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
     <script src="https://unpkg.com/simple-statistics@5.1.0/dist/simple-statistics.min.js"></script>
+    <script src="libs/markerCluster/leaflet.markercluster.js"></script>
 
     <script>
         var map = L.map('map', {
@@ -48,9 +51,12 @@
 
         $.when(
             // $.getJSON('data/districts.json'),
-            $.getJSON('project-data/monudist.json'),
+            $.getJSON('data/monudist.json'),
             $.getJSON('data/symbols.json')
         ).done(function (districts, symbols) {
+
+            symbols =symbols[0];
+
             makeMap(districts, symbols)
         });
 
@@ -62,7 +68,9 @@
                 onEachFeature: function (feature, layer) {
                     var tip = "<h3> <b># Confederate Monuments</b>: " + feature.properties.join_count +
                         "<h3>"
-                    layer.bindTooltip(tip);
+                    layer.bindTooltip(tip, {
+                        sticky: true,
+                    });
                 }
 
             }).addTo(map);
@@ -77,7 +85,22 @@
 
             makeChoroLegend(breaks);
 
-            // L.geoJson(symbols).addTo(map);
+            // create new markerClusterGroup
+            var markers = L.markerClusterGroup();
+
+            // loop through all our signals features
+            symbols.features.forEach(function(feature) {
+                // create a new Leaflet marker for each
+                var coords = feature.geometry.coordinates,
+                    marker = L.marker([coords[1], coords[0]]);
+                // bind a tooltip to the marker
+                marker.bindTooltip("Monument: " + feature.properties.feature_name);
+                // add the marker to the markerClusterGroup
+                markers.addLayer(marker);
+
+            });
+            // add the markerClusterGroup to the map
+            map.addLayer(markers);
 
         };
 
