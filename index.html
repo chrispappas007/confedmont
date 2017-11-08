@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Conderate something something</title>
+    <title>History Revised</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="author" content="Chris">
@@ -94,7 +94,7 @@
                 var coords = feature.geometry.coordinates,
                     marker = L.marker([coords[1], coords[0]]);
                 // bind a tooltip to the marker
-                marker.bindTooltip("Monument: " + feature.properties.feature_name);
+                marker.bindTooltip("<b>Monument:</b> " + feature.properties.feature_name);
                 // add the marker to the markerClusterGroup
                 markers.addLayer(marker);
 
