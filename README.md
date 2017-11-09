@@ -6,6 +6,7 @@ Recent events have brought about a national conversation on Civil War Monuments,
 Our datasets were drawn from two sources:
 * [SPLC Confederate Symbols Database](https://splcenter.carto.com/tables/confederate_symbols/public) hosted by [CARTO](https://carto.com/)
 * [Congressional Districts](https://www.census.gov/geo/maps-data/data/cbf/cbf_cds.html) for 115th Congress from the [Census Bureau](https://www.census.gov/en.html)
+
 Please note that the data displayed in our map has NOT been normalized and is instead the raw counts of monuments as documented in each congressional district.
 
 ### Processes and Scripts
