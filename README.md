@@ -13,6 +13,7 @@ Please note that the data displayed in our map has NOT been normalized and is in
 SPLC offers their data for download in both geoJSON and CSV format. We choose the CSV format so we can easily examine the data, simplify the categories, and include additional information. This file was then converted to a geojson. The congressional districts were downloaded as a shapefile and mapshaper was used to make the geoJSON conversion, trim percision, and filter unwanted fields. The SPLC data was then joined to the congressional districts using mapshaper. Packages used for this project include:
 * [csv2geojson](https://github.com/mapbox/csv2geojson)
 * [mapshaper](https://github.com/mbloch/mapshaper)
+
 Our scripts for processing were:
 * use csv2geojson to convert csv to geojson
 
