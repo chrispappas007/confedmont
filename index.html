@@ -19,6 +19,7 @@
 
 <body>
 
+    <div class="container"><header><h1>History Revised</h1></header></div>  
     <div id="map"></div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -78,6 +79,17 @@
             maxZoom: 18,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
         }).addTo(map);
+
+        var title = L.control({'position' : 'topright'});
+        title.onAdd = function (map) {
+                var div = L.DomUtil.create('div', 'container'); // create a div with a class "info"
+                var titleInfo = "<h1 class='txt-h2 bg-white align-center align-middle py12 px12'>History Revised: Civil War Monuments Across the US</h1>";
+                div.innerHTML =  titleInfo;
+                return div;
+            };
+
+            title.addTo(map);
+
 
         $.when(
             // $.getJSON('data/districts.json'),

@@ -27,3 +27,9 @@ body {
     cursor: pointer;
     font-weight: bold;
 }
+.container {
+    width: auto;
+    height: auto;
+    text-align: center;
+    font-weight: bold;
+}
