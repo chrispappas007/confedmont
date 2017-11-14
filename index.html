@@ -19,7 +19,7 @@
 
 <body>
 
-    <div class="container"><header><h1>History Revised</h1></header></div>  
+    <div class="container"><h1>History Revised</h1></div>  
     <div id="map"></div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -30,11 +30,17 @@
     <script src="libs/markerCluster/leaflet.markercluster.js"></script>
 
     <script>
+        var maxBounds = [[24.39, -124.84], [49.38, -66.88]];
         var map = L.map('map', {
             zoomSnap: .1,
-            center: [38.599, -95.545],
-            zoom: 4
+            maxBounds: maxBounds
         });
+
+        map.fitBounds(maxBounds, {
+            padding: [20,20]
+        });
+        map.setMaxZoom(map.getZoom() + 5);
+        map.setMinZoom(map.getZoom());
 
         var outline = {
             color: '#ffffff',
